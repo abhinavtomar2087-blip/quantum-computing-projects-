@@ -93,3 +93,29 @@ class Operator:
 
     def __repr__(self):
         return f"Operator(\n{self.mat}\n)"
+
+
+# Essential functions 
+def tensor_product(*args):
+    result = args[0]
+    for i in args[1:]:
+        result = np.kron(result, i)
+    return result
+
+def partial_trace(rho, dims, trace_out):
+    dims = np.array(dims)
+    N = len(dims)
+    keep = [i for i in range(N) if i not in trace_out]
+
+    rho_reshaped = rho.reshape(np.concatenate([dims, dims]))  # (i1,i2,...,j1,j2,...)
+    for subsystem in sorted(trace_out, reverse=True):
+        rho_reshaped = np.trace(rho_reshaped, axis1=subsystem, axis2=subsystem + N)
+
+    final_dim = int(np.prod(dims[keep])) if keep else 1
+    return rho_reshaped.reshape(final_dim, final_dim)
+
+def von_neumann_entropy(rho):
+    vals = np.linalg.eigvals(rho)
+    vals = np.real(vals)
+    vals = vals[vals > 1e-12]
+    return -np.sum(vals * np.log2(vals))
