@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplt as plt 
 from matplotlib.animation imoprt FuncAnimation 
-
+import tools
 
 def heisenberg_4site(J=1.0):
     H = np.zeros((16,16),dtype=complex)
