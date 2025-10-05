@@ -10,7 +10,7 @@ def heisenberg_4site(J=1.0):
         ops_x[i], ops_x[i+1] = sx, sx
         ops_y[i], ops_y[i+1] = sy, sy
         ops_z[i], ops_z[i+1] = sz, sz
-        H += J*(tensor_product(*ops_x) + tensor_product(*ops_y) + tensor_product(*ops_z))
+        H += J*(qo.tensor_product(*ops_x) + qo.tensor_product(*ops_y) + qo.tensor_product(*ops_z))
     return H
 
 def bath_hamiltonian(N=10, omega=0.1):
@@ -50,7 +50,7 @@ H_total = np.kron(Hs, Ib) + np.kron(Is, Hb) + Hint
 up = np.array([1,0],dtype=complex)
 down = np.array([0,1],dtype=complex)
 
-psiS = tensor_product(up, down, up, down)  # Néel state |↑↓↑↓>
+psiS = qo.tensor_product(up, down, up, down)  # Néel state |↑↓↑↓>
 rhoS0 = np.outer(psiS, psiS.conj())
 
 rhoB0 = np.exp(-Hb/T)
@@ -89,9 +89,9 @@ entropies = []
 
 for t in times:
     rho_t = evolve_rho(rho0, H_total, t)
-    rhoS_t = partial_trace(rho_t, dims, trace_out=[4])
+    rhoS_t = qo.partial_trace(rho_t, dims, trace_out=[4])
     magnetizations.append(magnetization(rhoS_t))
-    entropies.append(von_neumann_entropy(rhoS_t))
+    entropies.append(qo.von_neumann_entropy(rhoS_t))
 
 magnetizations = np.array(magnetizations)
 entropies = np.array(entropies)
