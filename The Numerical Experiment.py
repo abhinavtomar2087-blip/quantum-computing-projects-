@@ -22,9 +22,7 @@ def interaction_hamiltonian(Hb, g=0.2):
     id_spin234 = np.eye(8)
     return g * np.kron(np.kron(sz, id_spin234), Hb)
 
-# ------------------------
-# Parameters
-# ------------------------
+
 N_bath = 10
 omega = 0.1
 J = 1.0
@@ -58,17 +56,11 @@ rhoB0 /= np.trace(rhoB0)
 
 rho0 = np.kron(rhoS0, rhoB0)
 
-# ------------------------
-# Time evolution (using matrix exponential via eigendecomposition)
-# ------------------------
 def evolve_rho(rho0, H, t):
     vals, vecs = np.linalg.eigh(H)
     U = vecs @ np.diag(np.exp(-1j*vals*t)) @ vecs.conj().T
     return U @ rho0 @ U.conj().T
 
-# ------------------------
-# Observables
-# ------------------------
 def magnetization(rhoS):
     mags = []
     for i in range(4):
@@ -78,9 +70,6 @@ def magnetization(rhoS):
         mags.append(np.real(np.trace(rhoS @ sz_i)))
     return mags
 
-# ------------------------
-# Simulation loop
-# ------------------------
 times = np.linspace(0, 10, 50)
 dims = [2,2,2,2,N_bath]
 
@@ -96,16 +85,13 @@ for t in times:
 magnetizations = np.array(magnetizations)
 entropies = np.array(entropies)
 
-# ------------------------
-# Plot results
-# ------------------------
 plt.figure(figsize=(12,5))
 
 plt.subplot(1,2,1)
 for i in range(4):
     plt.plot(times, magnetizations[:,i], label=f'Spin {i+1}')
 plt.xlabel('Time')
-plt.ylabel('<σz>')
+plt.ylabel('<sigma-z>')
 plt.title('Magnetization decay')
 plt.legend()
 
@@ -126,7 +112,7 @@ fig, ax = plt.subplots()
 bars = ax.bar(range(4), magnetizations[0], color='skyblue')
 ax.set_ylim(-1,1)
 ax.set_xlabel("Spin index")
-ax.set_ylabel("<σz>")
+ax.set_ylabel("<sigma-z>")
 ax.set_title("Magnetization evolution over time")
 
 for t_idx in range(len(times)):
